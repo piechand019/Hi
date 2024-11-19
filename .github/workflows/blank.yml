@@ -24,7 +24,7 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/app:latest -f ./Network-CA1/Dockerfile ./Network-CA1
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/app:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/app:latest
 
   deploy:
@@ -38,11 +38,11 @@ jobs:
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.7.0
       with:
-        ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
 
     - name: Deploy Docker container to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@34.243.146.197 \
+        ssh -o StrictHostKeyChecking=no ubuntu@54.170.110.187 \
         'sudo docker pull ${{ secrets.DOCKER_USERNAME }}/app:latest && \
          sudo docker stop app || true && \
          sudo docker rm app || true && \
